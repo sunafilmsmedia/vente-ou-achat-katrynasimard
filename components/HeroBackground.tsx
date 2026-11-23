@@ -30,8 +30,8 @@ export default function HeroBackground() {
             "radial-gradient(ellipse at 50% -5%, #1a2458 0%, #0f173d 45%, #050821 100%)",
         }}
       />
-      <div className="absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-[var(--color-gold)]/[0.14] blur-3xl" />
-      <div className="absolute top-1/3 -left-32 w-[28rem] h-[28rem] rounded-full bg-[var(--color-gold)]/[0.1] blur-3xl" />
+      <div className="absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-white/[0.09] blur-3xl" />
+      <div className="absolute top-1/3 -left-32 w-[28rem] h-[28rem] rounded-full bg-white/[0.06] blur-3xl" />
     </div>
   );
 }
