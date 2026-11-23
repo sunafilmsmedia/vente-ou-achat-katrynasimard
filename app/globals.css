@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Tiro Bangla", Georgia, "Times New Roman", serif;
+  --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Poppins", "Arial Black", "Helvetica Neue", sans-serif;
+
+  --color-ink-950: #000000;
+  --color-ink-900: #0a0a0a;
+  --color-ink-800: #141414;
+  --color-ink-700: #1f1f1f;
+
+  /* Thème SOMBRE — fond bleu marine / texte blanc / accent OR (Katryna
+     Simard, Royal LePage Humania / Les Immeubles Mont-Tremblant). Palette
+     demandée telle quelle : navy #0c1341, or #dcb169.
+     brand-100/200 = textes blancs lisibles sur marine ;
+     brand-300 = or (micro-libellés, icônes) lisible sur marine ;
+     brand-400..900 = surfaces marine élevées (cartes, cercles). */
+  --color-brand-50: #ffffff;
+  --color-brand-100: #ffffff;
+  --color-brand-200: #e9e4d8;
+  --color-brand-300: #dcb169;
+  --color-brand-400: #1a2458;
+  --color-brand-500: #131c48;
+  --color-brand-600: #0f173d;
+  --color-brand-700: #0c1341;
+  --color-brand-800: #090f33;
+  --color-brand-900: #050821;
+
+  /* Or — accent de marque unique, demandé explicitement avec le navy et le blanc */
+  --color-gold: #dcb169;
+  --color-gold-soft: #e8c793;
+
+  --color-slate-accent: #dcb169;
+  --color-slate-soft: #e8c793;
+
+  /* Textes secondaires — gris-marine clairs lisibles sur fond marine */
+  --color-slate-300: #cdd2e8;
+  --color-slate-400: #9ca3c4;
+  --color-slate-500: #767ea0;
+  --color-slate-600: #4f5674;
+}
+
+html, body {
+  background: radial-gradient(ellipse at 50% -5%, #1a2458 0%, #0f173d 45%, #050821 100%);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Surface bleue givrée (thème sombre) */
+@utility glass-card {
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 24px 60px -28px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+@utility glass-card-light {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(220, 177, 105, 0.35);
+  box-shadow:
+    0 30px 80px -30px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Titre d'affichage — gros bold majuscules large */
+@utility display-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1.02;
+}
+
+/* AI shimmer — dégradé blanc/or, lisible sur fond marine */
+@keyframes ai-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.ai-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #dcb169 22%,
+    #ffffff 44%,
+    #dcb169 62%,
+    #ffffff 82%,
+    #dcb169 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: ai-shimmer 8s linear infinite;
+}
+.ai-shimmer-fast {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #dcb169 22%,
+    #ffffff 44%,
+    #dcb169 62%,
+    #ffffff 82%,
+    #dcb169 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: ai-shimmer 2.5s linear infinite;
+}
+
+/* Pulse dot */
+@keyframes soft-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: soft-pulse 1.8s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+/* Scrollbar discrète */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255, 0.18);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255, 0.3); }
+
+/* Inputs sans bordures par défaut */
+input, textarea, select {
+  background: transparent;
+  outline: none;
+  border: none;
+}
+input:focus, textarea:focus, select:focus { outline: none; }
