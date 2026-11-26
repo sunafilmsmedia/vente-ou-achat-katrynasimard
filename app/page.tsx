@@ -7,13 +7,14 @@ import HeroBackground from "@/components/HeroBackground";
 import TopLogos from "@/components/TopLogos";
 import QualificationForm from "@/components/QualificationForm";
 import LoadingScreen from "@/components/LoadingScreen";
+import DisqualifiedScreen from "@/components/DisqualifiedScreen";
 import ResultsScreen from "@/components/results/ResultsScreen";
 import { trackStep } from "@/lib/track";
 import { getFbclid } from "@/lib/attribution";
 import { trackLeadWithMatching } from "@/components/MetaPixel";
 import type { AnalyzeResponse, Answers } from "@/lib/types";
 
-type Stage = "hero" | "form" | "loading" | "results";
+type Stage = "hero" | "form" | "loading" | "results" | "disqualified";
 
 const MIN_LOADING_MS = 2000;
 
@@ -108,6 +109,12 @@ export default function Home() {
     }, remaining);
   };
 
+  const handleDisqualified = () => {
+    trackStep("disqualifie_contrat_courtage_existant");
+    setStage("disqualified");
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+  };
+
   const restart = () => {
     setAnswers(null);
     setAnalyze(null);
@@ -116,7 +123,7 @@ export default function Home() {
     if (typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
-  const showChrome = stage === "hero" || stage === "results";
+  const showChrome = stage === "hero" || stage === "results" || stage === "disqualified";
 
   return (
     <main className="relative min-h-screen overflow-hidden">
@@ -147,7 +154,12 @@ export default function Home() {
         )}
         {stage === "form" && (
           <motion.div key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }}>
-            <QualificationForm onComplete={handleFormComplete} onExit={() => setStage("hero")} />
+            <QualificationForm onComplete={handleFormComplete} onDisqualified={handleDisqualified} onExit={() => setStage("hero")} />
+          </motion.div>
+        )}
+        {stage === "disqualified" && (
+          <motion.div key="disqualified" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
+            <DisqualifiedScreen onRestart={restart} />
           </motion.div>
         )}
         {stage === "loading" && (

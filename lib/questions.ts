@@ -1,6 +1,7 @@
 import type { Answers } from "./types";
 
 export type QuestionId =
+  | "hasBrokerContract"
   | "reasonForChange"
   | "searchStage"
   | "currentPropertyType"
@@ -9,7 +10,6 @@ export type QuestionId =
   | "ownershipDuration"
   | "needsSaleMoney"
   | "canCarryTwoMortgages"
-  | "hasSavings"
   | "priority"
   | "fullName"
   | "email"
@@ -42,6 +42,19 @@ export interface QuestionDef {
 }
 
 export const QUESTIONS: QuestionDef[] = [
+  // ── Admissibilité ─────────────────────────────────────────────────────
+  {
+    id: "hasBrokerContract",
+    kind: "choice",
+    title: "As-tu actuellement un contrat de courtage signé avec un autre courtier immobilier ?",
+    subtitle: "Pour la vente de ta propriété actuelle ou l'achat de la prochaine.",
+    autoAdvance: true,
+    choices: [
+      { value: "non", label: "Non, je n'ai pas de contrat signé" },
+      { value: "oui", label: "Oui, j'ai un contrat signé avec un autre courtier" },
+    ],
+  },
+
   // ── Étape 1 — Ton projet ────────────────────────────────────────────────
   {
     id: "reasonForChange",
@@ -145,18 +158,6 @@ export const QUESTIONS: QuestionDef[] = [
     // propriétés — la question devient inutile.
     showIf: (a) => a.needsSaleMoney !== "oui_absolument",
   },
-  {
-    id: "hasSavings",
-    kind: "choice",
-    title: "As-tu des économies disponibles pour ton prochain achat, indépendamment de la vente de ta propriété actuelle ?",
-    autoAdvance: true,
-    choices: [
-      { value: "oui", label: "Oui" },
-      { value: "non", label: "Non" },
-      { value: "prefere_ne_pas_repondre", label: "Je préfère ne pas répondre" },
-    ],
-  },
-
   // ── Étape 4 — Tes priorités ──────────────────────────────────────────────
   {
     id: "priority",
@@ -205,8 +206,16 @@ export function getVisibleQuestions(answers: Answers): QuestionDef[] {
   return QUESTIONS.filter((q) => !q.showIf || q.showIf(answers));
 }
 
+// Plus aucune question n'est posée après une réponse disqualifiante : la loi
+// sur le courtage immobilier interdit de représenter ou de solliciter une
+// personne déjà liée par un contrat de courtage actif avec un autre courtier.
+export function isDisqualified(a: Answers): boolean {
+  return a.hasBrokerContract === "oui";
+}
+
 export function isAnswered(q: QuestionDef, a: Answers): boolean {
   switch (q.id) {
+    case "hasBrokerContract": return !!a.hasBrokerContract;
     case "reasonForChange": return !!a.reasonForChange;
     case "searchStage": return !!a.searchStage;
     case "currentPropertyType": return !!a.currentPropertyType;
@@ -215,7 +224,6 @@ export function isAnswered(q: QuestionDef, a: Answers): boolean {
     case "ownershipDuration": return !!a.ownershipDuration;
     case "needsSaleMoney": return !!a.needsSaleMoney;
     case "canCarryTwoMortgages": return !!a.canCarryTwoMortgages;
-    case "hasSavings": return !!a.hasSavings;
     case "priority": return !!a.priority;
     case "fullName": return !!(a.fullName ?? "").trim();
     case "email": return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((a.email ?? "").trim());

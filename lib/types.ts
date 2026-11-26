@@ -51,7 +51,7 @@ export type CanCarryTwoMortgages =
   | "non"
   | "ne_sais_pas";
 
-export type HasSavings = "oui" | "non" | "prefere_ne_pas_repondre";
+export type HasBrokerContract = "oui" | "non";
 
 export type Priority =
   | "meilleur_prix"
@@ -67,6 +67,9 @@ export type Region = {
 };
 
 export interface Answers {
+  // ── Admissibilité ─────────────────────────────────────────────────────
+  hasBrokerContract?: HasBrokerContract;
+
   // ── Étape 1 — Ton projet ───────────────────────────────────────────────
   reasonForChange?: ReasonForChange;
   searchStage?: SearchStage;
@@ -81,7 +84,6 @@ export interface Answers {
   // ── Étape 3 — Ta situation financière ───────────────────────────────────
   needsSaleMoney?: NeedsSaleMoney;
   canCarryTwoMortgages?: CanCarryTwoMortgages;
-  hasSavings?: HasSavings;
 
   // ── Étape 4 — Tes priorités ─────────────────────────────────────────────
   priority?: Priority;
