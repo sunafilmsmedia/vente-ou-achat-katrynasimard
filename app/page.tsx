@@ -10,7 +10,8 @@ import LoadingScreen from "@/components/LoadingScreen";
 import DisqualifiedScreen from "@/components/DisqualifiedScreen";
 import ResultsScreen from "@/components/results/ResultsScreen";
 import { trackStep } from "@/lib/track";
-import { getFbclid } from "@/lib/attribution";
+import { getFbc, getFbclid, getFbp } from "@/lib/attribution";
+import { computeScoring } from "@/lib/scoring";
 import { trackLeadWithMatching } from "@/components/MetaPixel";
 import type { AnalyzeResponse, Answers } from "@/lib/types";
 
@@ -29,6 +30,27 @@ async function submitLead(answers: Answers): Promise<LeadResult | null> {
   if (!name || !email) return null;
 
   const [firstNameRaw, ...lastParts] = name.split(/\s+/);
+
+  // Lead navigateur envoyé tout de suite (avant le webhook CRM, qui peut être
+  // lent) avec le même eventId que la CAPI serveur → Meta déduplique.
+  const eventId =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  trackLeadWithMatching(
+    {
+      email,
+      phone: phone || undefined,
+      firstName: firstNameRaw,
+      lastName: lastParts.join(" ") || undefined,
+    },
+    {
+      content_category: "real_estate_sell_or_buy_first",
+      verdict: computeScoring(answers).verdict,
+    },
+    eventId
+  );
+
   try {
     const res = await fetch("/api/lead", {
       method: "POST",
@@ -41,22 +63,13 @@ async function submitLead(answers: Answers): Promise<LeadResult | null> {
         answers,
         leadType: "vente_achat",
         fbclid: getFbclid(),
+        fbc: getFbc() || undefined,
+        fbp: getFbp() || undefined,
+        eventId,
       }),
     });
     const data = await res.json();
 
-    trackLeadWithMatching(
-      {
-        email,
-        phone: phone || undefined,
-        firstName: firstNameRaw,
-        lastName: lastParts.join(" ") || undefined,
-      },
-      {
-        content_category: "real_estate_sell_or_buy_first",
-        verdict: data.verdict,
-      }
-    );
     trackStep("soumis");
     return { stored: !!data.stored, firstName: firstNameRaw };
   } catch {

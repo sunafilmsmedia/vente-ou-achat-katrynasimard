@@ -77,7 +77,8 @@ export interface AdvancedMatchingInfo {
 // subséquents sur la session — incluant l'event Lead qui suit.
 export function trackLeadWithMatching(
   user: AdvancedMatchingInfo,
-  eventParams?: Record<string, unknown>
+  eventParams?: Record<string, unknown>,
+  eventId?: string
 ) {
   if (typeof window === "undefined" || !window.fbq) return;
 
@@ -88,5 +89,7 @@ export function trackLeadWithMatching(
   if (user.lastName) userData.ln = user.lastName.trim().toLowerCase();
 
   window.fbq("init", PIXEL_ID, userData);
-  window.fbq("track", "Lead", eventParams);
+  // eventID identique à celui envoyé par la CAPI → Meta déduplique.
+  if (eventId) window.fbq("track", "Lead", eventParams ?? {}, { eventID: eventId });
+  else window.fbq("track", "Lead", eventParams);
 }

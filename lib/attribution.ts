@@ -26,3 +26,22 @@ export function getFbclid(): string {
     return "";
   }
 }
+
+function readCookie(name: string): string {
+  if (typeof document === "undefined") return "";
+  const m = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+// Cookie _fbp posé par le pixel (identifiant navigateur Meta).
+export function getFbp(): string {
+  return readCookie("_fbp");
+}
+
+// Cookie _fbc, ou reconstruit depuis le fbclid stocké (format fb.1.<ts>.<fbclid>).
+export function getFbc(): string {
+  const cookie = readCookie("_fbc");
+  if (cookie) return cookie;
+  const fbclid = getFbclid();
+  return fbclid ? `fb.1.${Date.now()}.${fbclid}` : "";
+}
