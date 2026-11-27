@@ -42,19 +42,6 @@ export interface QuestionDef {
 }
 
 export const QUESTIONS: QuestionDef[] = [
-  // ── Admissibilité ─────────────────────────────────────────────────────
-  {
-    id: "hasBrokerContract",
-    kind: "choice",
-    title: "As-tu actuellement un contrat de courtage signé avec un autre courtier immobilier ?",
-    subtitle: "Pour la vente de ta propriété actuelle ou l'achat de la prochaine.",
-    autoAdvance: true,
-    choices: [
-      { value: "non", label: "Non, je n'ai pas de contrat signé" },
-      { value: "oui", label: "Oui, j'ai un contrat signé avec un autre courtier" },
-    ],
-  },
-
   // ── Étape 1 — Ton projet ────────────────────────────────────────────────
   {
     id: "reasonForChange",
@@ -169,6 +156,19 @@ export const QUESTIONS: QuestionDef[] = [
       { value: "maison_parfaite", label: "Trouver la maison parfaite, même si ça prend du temps" },
       { value: "eviter_deux_hypotheques", label: "Éviter de payer deux hypothèques" },
       { value: "eviter_deplacement_double", label: "Éviter de devoir déménager deux fois" },
+    ],
+  },
+
+  // ── Admissibilité ─────────────────────────────────────────────────────
+  {
+    id: "hasBrokerContract",
+    kind: "choice",
+    title: "As-tu actuellement un contrat de courtage signé avec un autre courtier immobilier ?",
+    subtitle: "Pour la vente de ta propriété actuelle ou l'achat de la prochaine.",
+    autoAdvance: true,
+    choices: [
+      { value: "non", label: "Non, je n'ai pas de contrat signé" },
+      { value: "oui", label: "Oui, j'ai un contrat signé avec un autre courtier" },
     ],
   },
 
